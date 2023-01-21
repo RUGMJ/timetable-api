@@ -30,7 +30,7 @@ app.get('/debug/getInfo', async (req, res) => {
 	});
 });
 
-app.listen(PORT);
+app.listen(parseInt(PORT));
 
 async function getLessons() {
 	const timeSinceLastCheck = Date.now() - lastRetrivedLessons;
