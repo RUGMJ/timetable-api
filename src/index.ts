@@ -1,14 +1,15 @@
 import express from 'express';
 import timetable from './timetable.json' assert { type: 'json' };
 import { JSDOM } from 'jsdom';
+import { config } from 'dotenv';
+
+config();
 
 const app = express();
 
 app.use(express.json());
 
-const HOURS = 3600000;
-const PORT = 3000;
-const CACHE_TIME = 12 * HOURS;
+let { CACHE_TIME, PORT } = process.env;
 
 let lastRetrivedLessons = Date.now();
 let lessons: { subject: string; teacher: string; class: string }[];
@@ -29,11 +30,11 @@ app.get('/debug/getInfo', async (req, res) => {
 	});
 });
 
-app.listen(3000);
+app.listen(PORT);
 
 async function getLessons() {
 	const timeSinceLastCheck = Date.now() - lastRetrivedLessons;
-	if (timeSinceLastCheck < CACHE_TIME && lessons) return lessons;
+	if (timeSinceLastCheck < parseInt(CACHE_TIME) && lessons) return lessons;
 
 	const week = await getWeek();
 
