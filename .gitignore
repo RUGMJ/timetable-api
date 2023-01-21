@@ -1,0 +1,4 @@
+node_modules
+dist
+src/timetable.json
+pnpm-lock.yaml
