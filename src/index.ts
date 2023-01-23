@@ -15,16 +15,21 @@ let lastRetrivedWeek = Date.now();
 let week: number;
 
 app.get('/', async (req, res) => {
-	res.send(await getLessons());
+	res.send(await getLessons(await getWeek(), getDay()));
 });
 
 app.get('/tomorrow', async (req, res) => {
-	res.send(await getLessons(1));
+	res.send(await getLessons(await getWeek(), getDay() + 1));
+});
+
+app.get('/:week/:day', async (req, res) => {
+	const { week, day } = req.params;
+	res.send(await getLessons(parseInt(week), parseInt(day)));
 });
 
 app.get('/debug/refreshCache', async (req, res) => {
 	week = undefined;
-	res.send(await getLessons());
+	res.send(await getLessons(await getWeek(), getDay()));
 });
 
 app.get('/debug/getInfo', async (req, res) => {
@@ -36,11 +41,7 @@ app.get('/debug/getInfo', async (req, res) => {
 
 app.listen(parseInt(PORT));
 
-async function getLessons(dayOffset = 0) {
-	const week = await getWeek();
-
-	const day = getDay() + dayOffset;
-
+async function getLessons(week: number, day: number) {
 	return timetable[week][day];
 }
 
