@@ -18,6 +18,10 @@ app.get('/', async (req, res) => {
 	res.send(await getLessons());
 });
 
+app.get('/tomorrow', async (req, res) => {
+	res.send(await getLessons(1));
+});
+
 app.get('/debug/refreshCache', async (req, res) => {
 	week = undefined;
 	res.send(await getLessons());
@@ -32,10 +36,10 @@ app.get('/debug/getInfo', async (req, res) => {
 
 app.listen(parseInt(PORT));
 
-async function getLessons() {
+async function getLessons(dayOffset = 0) {
 	const week = await getWeek();
 
-	const day = getDay();
+	const day = getDay() + dayOffset;
 
 	return timetable[week][day];
 }
